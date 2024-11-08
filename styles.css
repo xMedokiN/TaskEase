@@ -85,6 +85,7 @@ section {
     color: #fff;
 }
 
+/* Stopka */
 .footer {
     background: #333;
     color: #fff;
@@ -190,6 +191,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="dat
     float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .close-btn:hover,
@@ -267,6 +269,24 @@ input[type="text"], input[type="password"], input[type="email"], input[type="dat
     margin-bottom: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.delete-task-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: red;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-task-btn:hover {
+    background-color: darkred;
 }
 
 /* Recommendations Section for Dashboard */
