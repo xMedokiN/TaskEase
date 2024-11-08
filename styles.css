@@ -1,0 +1,330 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Logo */
+.logo-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Nagłówek */
+.header {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: #fff;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.header h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.header p {
+    font-size: 1.2em;
+    margin-bottom: 40px;
+}
+
+.cta-button {
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    background: #fff;
+    color: #2575fc;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.cta-button:hover {
+    background: #e2e2e2;
+}
+
+/* Sekcje */
+section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.features, .ai-widget, .pricing {
+    background: #f9f9f9;
+    margin-top: 40px;
+}
+
+.features h2, .ai-widget h2, .pricing h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.feature-item, .plan {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-table {
+    display: flex;
+    justify-content: center;
+}
+
+.plan {
+    flex: 1;
+    margin: 10px;
+}
+
+.pro-plan {
+    background: #6a11cb;
+    color: #fff;
+}
+
+.footer {
+    background: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.social-links {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.social-links li a {
+    color: #fff;
+    margin: 0 10px;
+    font-size: 1.5em;
+    transition: color 0.3s;
+}
+
+.social-links li a:hover {
+    color: #6a11cb;
+}
+
+/* Widżet AI */
+.widget-animation {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+/* Formularze logowania i rejestracji */
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"], input[type="password"], input[type="email"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.button-primary {
+    padding: 15px 30px;
+    background-color: #6a11cb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-primary:hover {
+    background-color: #5a0eb0;
+}
+
+.form-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    color: #2575fc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+/* Modal do dodawania zadania */
+.task-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Header & Navigation for Dashboard */
+.dashboard-header {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    justify-content: space-between;
+}
+
+.dashboard-nav ul {
+    list-style-type: none;
+    display: flex;
+}
+
+.dashboard-nav li {
+    margin-right: 20px;
+}
+
+.dashboard-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.dashboard-nav a:hover {
+    color: #6a11cb;
+}
+
+/* Welcome Section for Dashboard */
+.welcome-section {
+    background-color: #6a11cb;
+    color: #fff;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.welcome-section h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.welcome-section p {
+    font-size: 1.2em;
+}
+
+/* Tasks Section for Dashboard */
+.tasks-section {
+    padding: 40px 20px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    max-width: 900px;
+    border-radius: 10px;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Recommendations Section for Dashboard */
+.recommendations-section {
+    padding: 40px 20px;
+    margin: 40px auto;
+    max-width: 900px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.recommendations-list {
+    margin-top: 20px;
+}
+
+.recommendations-list li {
+    margin-bottom: 10px;
+    background-color: #e2e2e2;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Pricing Section for Dashboard */
+.pricing-section {
+    padding: 40px 20px;
+    background-color: #f0f0f0;
+    margin: 40px auto;
+    max-width: 900px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.pricing-table {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.plan {
+    background-color: #fff;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 250px;
+}
+
+.pro-plan {
+    background-color: #6a11cb;
+    color: #fff;
+}
+
+/* Footer for Dashboard */
+.footer {
+    background: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+}

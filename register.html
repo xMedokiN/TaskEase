@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskEase - Rejestracja</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Logo -->
+    <div class="home-link-container" style="margin-left: 20px; display: inline-block; margin-right: 20px; vertical-align: middle;">
+        <a href="index.html" class="form-link" style="color: #fff; font-weight: bold; text-decoration: none; padding: 10px 15px; background-color: #6a11cb; border-radius: 8px; transition: background-color 0.3s;">Powrót na stronę główną</a>
+    </div>
+    <div class="logo-container">
+        <img src="logo.png" alt="TaskEase Logo" style="width: 150px; display: block; margin: 0 auto; background-color: #333; padding: 15px; border-radius: 15px;">
+    </div>
+    <!-- Formularz rejestracji -->
+    <div class="form-container">
+        <h2>Zarejestruj się</h2>
+        <form id="register-form">
+            <input type="text" id="register-name" placeholder="Imię" required style="width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="text" id="register-surname" placeholder="Nazwisko" required style="width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="tel" id="register-phone" placeholder="Numer telefonu" required pattern="[+]?[0-9]*" style="width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="email" id="register-username" placeholder="Adres e-mail" required style="width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="password" id="register-password" placeholder="Hasło" required style="width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="password" id="register-confirm-password" placeholder="Potwierdź hasło" required style="width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <button type="submit" class="button-primary">Zarejestruj się</button>
+        </form>
+        <a href="login.html" class="form-link">Masz już konto? Zaloguj się</a>
+    </div>
+    <script>
+        document.getElementById("register-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const password = document.getElementById("register-password").value;
+            const confirmPassword = document.getElementById("register-confirm-password").value;
+            const email = document.getElementById("register-username").value;
+
+            // Sprawdzenie, czy hasła są takie same
+            if (password !== confirmPassword) {
+                alert("Hasła muszą się zgadzać.");
+                return; // Zakończ funkcję, aby nie kontynuować rejestracji
+            }
+
+            // Sprawdzenie, czy użytkownik już istnieje
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const userExists = users.some(user => user.email === email);
+            if (userExists) {
+                alert("Użytkownik o podanym adresie e-mail już istnieje.");
+                return; // Zakończ funkcję, aby nie kontynuować rejestracji
+            }
+
+            // Zapisanie danych użytkownika i przekierowanie tylko w przypadku poprawności danych
+            const name = document.getElementById("register-name").value;
+            const surname = document.getElementById("register-surname").value;
+            const phone = document.getElementById("register-phone").value;
+            const newUser = {
+                name: name,
+                surname: surname,
+                phone: phone,
+                email: email,
+                password: password,
+                tasks: [],
+                recommendations: []
+            };
+            users.push(newUser);
+            localStorage.setItem("users", JSON.stringify(users));
+            alert("Rejestracja udana!");
+            window.location.href = "login.html";
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>

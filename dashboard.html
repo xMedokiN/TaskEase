@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskEase - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Logo i Menu -->
+    <header class="dashboard-header">
+        <div class="logo-container" style="display: inline-block;">
+            <img src="logo.png" alt="TaskEase Logo" style="width: 120px; background-color: #333; padding: 10px;">
+        </div>
+        <nav class="dashboard-nav">
+            <ul>
+                <li><a href="#" class="nav-link">Moje Zadania</a></li>
+                <li><a href="#" class="nav-link">Harmonogram</a></li>
+                <li><a href="#" class="nav-link">Rekomendacje</a></li>
+                <li><a href="#" class="nav-link">Mój Profil</a></li>
+                <li><a href="index.html" class="nav-link" id="logout-link">Wyloguj się</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Sekcja powitalna -->
+    <section class="welcome-section">
+        <div class="container">
+            <h1>Witaj, <span id="user-name"></span>!</h1>
+            <p>TaskEase jest tutaj, aby pomóc Ci zarządzać Twoimi codziennymi zadaniami i organizować Twój dzień w sposób najbardziej efektywny.</p>
+        </div>
+    </section>
+
+    <!-- Sekcja Integracji z Mailem -->
+    <section class="email-integration-section">
+        <div class="container">
+            <h2>Połącz swoje konto z mailem</h2>
+            <p>Połącz TaskEase z Twoim kontem e-mail, aby AI mogła analizować Twoje wiadomości i kalendarz, przekształcając je w zadania do wykonania.</p>
+            <button class="button-primary" id="connect-google-btn" style="margin: 20px;">Połącz swoje konto z Gmailem</button>
+            <button class="button-primary" id="connect-outlook-btn" style="margin: 20px;">Połącz swoje konto z Outlook</button>
+        </div>
+    </section>
+
+    <!-- Sekcja Moje Zadania -->
+    <section class="tasks-section">
+        <div class="container">
+            <h2>Moje Zadania</h2>
+            <div class="tasks-list" id="tasks-list">
+                <!-- Zadania generowane przez AI -->
+            </div>
+            <button class="button-primary" id="add-task-btn" style="margin-top: 20px;">Dodaj nowe zadanie</button>
+            <button class="button-primary" id="send-to-ai-btn" style="margin-top: 20px;">Prześlij zadania do AI</button>
+        </div>
+    </section>
+
+    <!-- Modal do dodawania nowego zadania -->
+    <div id="task-modal" class="task-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2>Dodaj nowe zadanie</h2>
+            <form id="task-form">
+                <label for="task-title">Tytuł zadania:</label>
+                <input type="text" id="task-title" required>
+
+                <label for="task-due-date">Termin realizacji:</label>
+                <input type="date" id="task-due-date" required>
+
+                <label for="task-priority">Priorytet:</label>
+                <select id="task-priority" required>
+                    <option value="wysoki">Wysoki</option>
+                    <option value="średni">Średni</option>
+                    <option value="niski">Niski</option>
+                </select>
+
+                <label for="task-details">Szczegóły zadania:</label>
+                <textarea id="task-details" rows="4"></textarea>
+
+                <button type="submit" class="button-primary">Dodaj zadanie</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal do potwierdzenia usunięcia zadania -->
+    <div id="delete-modal" class="task-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-delete-modal">&times;</span>
+            <h3>Czy na pewno chcesz usunąć to zadanie?</h3>
+            <button id="confirm-delete" class="button-primary" style="background-color: red;">Usuń</button>
+            <button id="cancel-delete" class="button-primary">Anuluj</button>
+        </div>
+    </div>
+
+    <!-- Sekcja Rekomendacje -->
+    <section class="recommendations-section">
+        <div class="container">
+            <h2>Rekomendacje TaskEase</h2>
+            <p>Na podstawie Twojej efektywności, proponujemy realizację zadań w następujących godzinach:</p>
+            <ul class="recommendations-list" id="recommendations-list">
+                <!-- Rekomendacje generowane przez AI -->
+            </ul>
+        </div>
+    </section>
+
+    <!-- Pakiety i Cennik (dla użytkowników darmowych) -->
+    <section class="pricing-section">
+        <div class="container">
+            <h2>Ulepsz swoje konto</h2>
+            <p>Skorzystaj z pełnych możliwości TaskEase dzięki naszym płatnym pakietom:</p>
+            <div class="pricing-table">
+                <div class="plan plus-plan">
+                    <h3>TaskEase Plus</h3>
+                    <p>Nielimitowany dostęp do listy zadań, rekomendacje godzin oraz optymalizacja zakupów.</p>
+                </div>
+                <div class="plan pro-plan">
+                    <h3>TaskEase Pro</h3>
+                    <p>Wszystkie funkcje Plus, AI optymalizujące trasy, organizacja zadań domowych, oraz statystyki efektywności.</p>
+                </div>
+            </div>
+            <button class="button-primary" style="margin-top: 20px;">Ulepsz teraz</button>
+        </div>
+    </section>
+
+    <!-- Stopka -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 TaskEase. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sprawdzenie, czy użytkownik jest zalogowany
+        document.addEventListener("DOMContentLoaded", function() {
+            const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+            // Jeśli użytkownik nie jest zalogowany, przekieruj go na stronę logowania
+            if (!loggedInUser) {
+                window.location.href = "login.html";
+            } else {
+                // Wyświetl imię użytkownika w sekcji powitalnej
+                document.getElementById("user-name").textContent = loggedInUser.name;
+                // Załaduj zadania i rekomendacje dla zalogowanego użytkownika
+                loadUserTasks(loggedInUser);
+                loadUserRecommendations(loggedInUser);
+            }
+        });
+
+        // Wylogowanie użytkownika
+        document.getElementById("logout-link").addEventListener("click", function() {
+            // Usuń dane zalogowanego użytkownika z localStorage
+            localStorage.removeItem("loggedInUser");
+            // Przekieruj użytkownika na stronę logowania
+            window.location.href = "login.html";
+        });
+
+        // Obsługa modala do dodawania zadania
+        const taskModal = document.getElementById("task-modal");
+        const addTaskBtn = document.getElementById("add-task-btn");
+        const closeModalBtn = document.getElementById("close-modal");
+
+        addTaskBtn.addEventListener("click", function() {
+            taskModal.style.display = "block";
+        });
+
+        closeModalBtn.addEventListener("click", function() {
+            taskModal.style.display = "none";
+        });
+
+        window.addEventListener("click", function(event) {
+            if (event.target === taskModal) {
+                taskModal.style.display = "none";
+            }
+        });
+
+        // Dodawanie nowego zadania z formularza
+        document.getElementById("task-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Sprawdzenie limitu zadań dla standardowego użytkownika
+            if (loggedInUser.tasks.length >= 5) {
+                alert("Osiągnięto maksymalny limit zadań dla standardowego użytkownika. Ulepsz swoje konto, aby dodać więcej zadań.");
+                return;
+            }
+
+            // Pobranie wartości z formularza
+            const title = document.getElementById("task-title").value;
+            const dueDate = document.getElementById("task-due-date").value;
+            const priority = document.getElementById("task-priority").value;
+            const details = document.getElementById("task-details").value;
+
+            // Tworzenie nowego zadania
+            const newTask = {
+                title: title,
+                dueDate: dueDate,
+                priority: priority,
+                details: details
+            };
+
+            // Dodanie zadania do użytkownika i zapisanie do localStorage
+            loggedInUser.tasks.push(newTask);
+            const updatedUsers = users.map(user => user.email === loggedInUser.email ? loggedInUser : user);
+            localStorage.setItem("users", JSON.stringify(updatedUsers));
+            localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+
+            // Aktualizowanie listy zadań
+            loadUserTasks(loggedInUser);
+            taskModal.style.display = "none";
+        });
+
+        // Wysłanie zadań do AI
+        document.getElementById("send-to-ai-btn").addEventListener("click", function() {
+            let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+            if (loggedInUser.tasks.length === 0) {
+                alert("Nie masz żadnych zadań do wysłania.");
+                return;
+            }
+            alert("Twoje zadania zostały przesłane do AI. Otrzymasz rekomendacje wkrótce.");
+        });
+
+        // Obsługa modala do potwierdzenia usunięcia zadania
+        const deleteModal = document.getElementById("delete-modal");
+        const closeDeleteModalBtn = document.getElementById("close-delete-modal");
+        let taskToDeleteIndex = null;
+
+        function addDeleteEventListeners() {
+            const deleteButtons = document.querySelectorAll(".delete-task-btn");
+            deleteButtons.forEach((button, index) => {
+                button.addEventListener("click", function() {
+                    taskToDeleteIndex = index;
+                    deleteModal.style.display = "block";
+                });
+            });
+        }
+
+        closeDeleteModalBtn.addEventListener("click", function() {
+            deleteModal.style.display = "none";
+        });
+
+        window.addEventListener("click", function(event) {
+            if (event.target === deleteModal) {
+                deleteModal.style.display = "none";
+            }
+        });
+
+        document.getElementById("confirm-delete").addEventListener("click", function() {
+            if (taskToDeleteIndex !== null) {
+                let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+
+                // Usunięcie zadania
+                loggedInUser.tasks.splice(taskToDeleteIndex, 1);
+                const updatedUsers = users.map(user => user.email === loggedInUser.email ? loggedInUser : user);
+                localStorage.setItem("users", JSON.stringify(updatedUsers));
+                localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+
+                // Aktualizacja listy zadań
+                loadUserTasks(loggedInUser);
+                deleteModal.style.display = "none";
+                taskToDeleteIndex = null;
+            }
+        });
+
+        document.getElementById("cancel-delete").addEventListener("click", function() {
+            deleteModal.style.display = "none";
+            taskToDeleteIndex = null;
+        });
+
+        // Funkcja ładowania zadań użytkownika
+        function loadUserTasks(user) {
+            const tasksList = document.getElementById("tasks-list");
+            tasksList.innerHTML = "";
+            if (user.tasks && user.tasks.length > 0) {
+                user.tasks.sort((a, b) => {
+                    // Sortowanie po priorytecie (wysoki, średni, niski) oraz po terminie
+                    const priorityOrder = { "wysoki": 1, "średni": 2, "niski": 3 };
+                    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                        return priorityOrder[a.priority] - priorityOrder[b.priority];
+                    }
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                });
+                user.tasks.forEach((task, index) => {
+                    const taskItem = document.createElement("div");
+                    taskItem.classList.add("task-item");
+                    taskItem.innerHTML = `
+                        <h3>${task.title}</h3>
+                        <p>Termin: ${task.dueDate}</p>
+                        <p>Priorytet: ${task.priority}</p>
+                        <p>${task.details}</p>
+                        <button class="button-primary delete-task-btn" style="background-color: red;">
+                            <i class="fas fa-trash"></i> Usuń
+                        </button>
+                    `;
+                    tasksList.appendChild(taskItem);
+                });
+                addDeleteEventListeners();
+            }
+        }
+
+        // Funkcja ładowania rekomendacji dla użytkownika
+        function loadUserRecommendations(user) {
+            const recommendationsList = document.getElementById("recommendations-list");
+            recommendationsList.innerHTML = "";
+            if (user.tasks && user.tasks.length > 0) {
+                const sortedTasks = [...user.tasks].sort((a, b) => {
+                    const priorityOrder = { "wysoki": 1, "średni": 2, "niski": 3 };
+                    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                        return priorityOrder[a.priority] - priorityOrder[b.priority];
+                    }
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                });
+                sortedTasks.forEach(task => {
+                    const recommendationItem = document.createElement("li");
+                    recommendationItem.textContent = `Zadanie: ${task.title}, Priorytet: ${task.priority}, Termin: ${task.dueDate}`;
+                    recommendationsList.appendChild(recommendationItem);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
