@@ -11,7 +11,7 @@
     <!-- Logo i Menu -->
     <header class="dashboard-header">
         <div class="logo-container" style="display: inline-block;">
-            <img src="logo.png" alt="TaskEase Logo" style="width: 120px; background-color: #333; padding: 10px; border-radius: 15px;">
+            <img src="logo.png" alt="TaskEase Logo" style="width: 120px; background-color: #333; padding: 10px;">
         </div>
         <nav class="dashboard-nav">
             <ul>
@@ -165,33 +165,62 @@
             taskModal.style.display = "none";
         });
 
-               // Obsługa dodawania zadania
-        document.getElementById("task-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const taskTitle = document.getElementById("task-title").value;
-            const taskDueDate = document.getElementById("task-due-date").value;
-            const taskPriority = document.getElementById("task-priority").value;
-            const taskDetails = document.getElementById("task-details").value;
+        window.addEventListener("click", function(event) {
+            if (event.target === taskModal) {
+                taskModal.style.display = "none";
+            }
+        });
 
-            const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-            if (!loggedInUser.tasks) {
-                loggedInUser.tasks = [];
+        // Dodawanie nowego zadania z formularza
+        document.getElementById("task-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Sprawdzenie limitu zadań dla standardowego użytkownika
+            if (loggedInUser.tasks.length >= 5) {
+                alert("Osiągnięto maksymalny limit zadań dla standardowego użytkownika. Ulepsz swoje konto, aby dodać więcej zadań.");
+                return;
             }
 
-            loggedInUser.tasks.push({
-                title: taskTitle,
-                dueDate: taskDueDate,
-                priority: taskPriority,
-                details: taskDetails
-            });
+            // Pobranie wartości z formularza
+            const title = document.getElementById("task-title").value;
+            const dueDate = document.getElementById("task-due-date").value;
+            const priority = document.getElementById("task-priority").value;
+            const details = document.getElementById("task-details").value;
 
+            // Tworzenie nowego zadania
+            const newTask = {
+                title: title,
+                dueDate: dueDate,
+                priority: priority,
+                details: details
+            };
+
+            // Dodanie zadania do użytkownika i zapisanie do localStorage
+            loggedInUser.tasks.push(newTask);
+            const updatedUsers = users.map(user => user.email === loggedInUser.email ? loggedInUser : user);
+            localStorage.setItem("users", JSON.stringify(updatedUsers));
             localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+
+            // Aktualizowanie listy zadań
             loadUserTasks(loggedInUser);
             taskModal.style.display = "none";
         });
 
-        // Obsługa modala do usuwania zadania
+        // Wysłanie zadań do AI
+        document.getElementById("send-to-ai-btn").addEventListener("click", function() {
+            let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+            if (loggedInUser.tasks.length === 0) {
+                alert("Nie masz żadnych zadań do wysłania.");
+                return;
+            }
+            alert("Twoje zadania zostały przesłane do AI. Otrzymasz rekomendacje wkrótce.");
+        });
+
+        // Obsługa modala do potwierdzenia usunięcia zadania
         const deleteModal = document.getElementById("delete-modal");
+        const closeDeleteModalBtn = document.getElementById("close-delete-modal");
         let taskToDeleteIndex = null;
 
         function addDeleteEventListeners() {
@@ -204,11 +233,28 @@
             });
         }
 
+        closeDeleteModalBtn.addEventListener("click", function() {
+            deleteModal.style.display = "none";
+        });
+
+        window.addEventListener("click", function(event) {
+            if (event.target === deleteModal) {
+                deleteModal.style.display = "none";
+            }
+        });
+
         document.getElementById("confirm-delete").addEventListener("click", function() {
             if (taskToDeleteIndex !== null) {
-                const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+                let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+
+                // Usunięcie zadania
                 loggedInUser.tasks.splice(taskToDeleteIndex, 1);
+                const updatedUsers = users.map(user => user.email === loggedInUser.email ? loggedInUser : user);
+                localStorage.setItem("users", JSON.stringify(updatedUsers));
                 localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+
+                // Aktualizacja listy zadań
                 loadUserTasks(loggedInUser);
                 deleteModal.style.display = "none";
                 taskToDeleteIndex = null;
@@ -225,17 +271,23 @@
             const tasksList = document.getElementById("tasks-list");
             tasksList.innerHTML = "";
             if (user.tasks && user.tasks.length > 0) {
+                user.tasks.sort((a, b) => {
+                    // Sortowanie po priorytecie (wysoki, średni, niski) oraz po terminie
+                    const priorityOrder = { "wysoki": 1, "średni": 2, "niski": 3 };
+                    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                        return priorityOrder[a.priority] - priorityOrder[b.priority];
+                    }
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                });
                 user.tasks.forEach((task, index) => {
                     const taskItem = document.createElement("div");
                     taskItem.classList.add("task-item");
                     taskItem.innerHTML = `
-                        <div style="text-align: center;">
-                            <h3>${task.title}</h3>
-                            <p>Szczegóły: ${task.details}</p>
-                            <p>Termin: ${task.dueDate}</p>
-                            <p>Priorytet: ${task.priority}</p>
-                        </div>
-                        <button class="delete-task-btn" style="position: absolute; top: 15px; right: 15px;">
+                        <h3>${task.title}</h3>
+                        <p>Termin: ${task.dueDate}</p>
+                        <p>Priorytet: ${task.priority}</p>
+                        <p>${task.details}</p>
+                        <button class="button-primary delete-task-btn" style="background-color: red;">
                             <i class="fas fa-trash"></i> Usuń
                         </button>
                     `;
